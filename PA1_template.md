@@ -1,20 +1,17 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+
+```r
 # Libraries Used
 library(plyr)
 library(lubridate)
 ```
 
-```{r, echo=TRUE}
+
+```r
 # Read the data from the directory
 data <- read.csv("activity.csv", header=TRUE, na.strings = "NA")
 
@@ -26,7 +23,8 @@ dataComplete <- data[complete.cases(data),]
 ```
 
 ## What is mean total number of steps taken per day?
-```{r, echo=TRUE}
+
+```r
 # Aggegate total steps per day
 totalSteps <- aggregate(steps  ~ date, 
                         FUN=sum, 
@@ -38,18 +36,34 @@ hist(totalSteps$steps,
      main="Histogram of Total Steps Taken Per Day",
      xlab="Total Number of Steps in a day",
      sub="Only Complete Cases")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 # Mean and median of total number of steps taken per day
 meanSteps <- mean(totalSteps$steps)
 medianSteps <- median(totalSteps$steps)
 
 print(meanSteps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 print(medianSteps)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
-```{r, echo=TRUE}
+
+```r
 # Aggregate average steps taken over each interval
 totalIs <- aggregate(steps  ~ interval, 
                      data=dataComplete, 
@@ -60,19 +74,34 @@ plot(totalIs$interval, totalIs$steps,
      main="Average Daily Activity Pattern",
      xlab="Five Minute Interval",
      ylab= "Average Number of Steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 # Which interval has the highest number of steps?
 totalIsMax <- totalIs[totalIs$steps == max(totalIs$steps),]
 print(totalIsMax)
+```
 
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 
 ## Imputing missing values
 
-```{r, echo=TRUE}
+
+```r
 # How many NAs appear in this dataset?
 sum(is.na(data))
+```
 
+```
+## [1] 2304
+```
+
+```r
 # take mean daily steps calculated above and divide 
 # by number of 5 minute intervals in a day (288)
 
@@ -87,19 +116,36 @@ hist(totalStepsNA$steps,
      main="Histogram of Total Steps Taken Per Day",
      sub="NA Values Replaced with Daily Average/Number of Intervals",
      xlab="Total Number of Steps in a day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+```r
 # Mean and Median of total steps per day
 meanStepsNA <- mean(totalStepsNA$steps)
 medianStepsNA <- median(totalStepsNA$steps)
 
 print(meanStepsNA)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 print(medianStepsNA)
+```
+
+```
+## [1] 10766.19
 ```
 
 Inputing the daily average divided by the number of intervals in a day increased the median of the daily steps taken each day. As expected, the mean remains unchanged.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r, echo=TRUE}
+
+```r
 # Find the day of the week using lubridate
 data$date <- ymd(data$date)
 data$day <- paste(wday(data$date))
@@ -130,8 +176,7 @@ plot(totalIsWeekend$interval, totalIsWeekend$steps,
      main="Average Daily Activity Pattern - Weekend",
      xlab="Five Minute Interval",
      ylab= "Average Number of Steps")
-
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
 
